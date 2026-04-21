@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P1 — Qualifying Questions Before OTP</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; background: #fff; display: flex; min-height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root" style="display:flex;width:100%;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useRef } = React;
+const P = { brand:"#6C5CE7",brandSoft:"#F3F0FF",dark:"#16192C",text:"#475569",light:"#94A3B8",border:"#E2E8F0",bg:"#FAFAFF",white:"#FFF",green:"#10B981",greenBg:"#ECFDF5" };
+
+const Inp = ({label,placeholder,type="text",value,onChange,helper,pre}) => (
+  <div style={{marginBottom:18}}>
+    <label style={{display:"block",fontSize:13,fontWeight:600,color:P.dark,marginBottom:6}}>{label}</label>
+    <div style={{display:"flex",border:`1.5px solid ${P.border}`,borderRadius:10,overflow:"hidden",background:P.white}}>
+      {pre && <div style={{padding:"11px 12px",background:P.bg,borderRight:`1px solid ${P.border}`,fontSize:14,color:P.text,whiteSpace:"nowrap"}}>{pre}</div>}
+      <input type={type} placeholder={placeholder} value={value} onChange={onChange}
+        style={{flex:1,padding:"11px 14px",border:"none",fontSize:14,color:P.dark,outline:"none",background:"transparent",width:"100%"}} />
+    </div>
+    {helper && <div style={{fontSize:12,color:P.light,marginTop:4}}>{helper}</div>}
+  </div>
+);
+
+const Sel = ({label,options,value,onChange}) => (
+  <div style={{marginBottom:18}}>
+    <label style={{display:"block",fontSize:13,fontWeight:600,color:P.dark,marginBottom:6}}>{label}</label>
+    <select value={value} onChange={onChange} style={{width:"100%",padding:"11px 14px",border:`1.5px solid ${P.border}`,borderRadius:10,fontSize:14,color:value?P.dark:P.light,background:P.white,outline:"none",appearance:"none"}}>
+      <option value="">Select</option>
+      {options.map(o => <option key={o} value={o}>{o}</option>)}
+    </select>
+  </div>
+);
+
+const Btn = ({children,onClick,disabled,v="primary",full=true}) => {
+  const pr = v==="primary";
+  return <button onClick={onClick} disabled={disabled} style={{width:full?"100%":"auto",padding:pr?"13px 28px":"12px 20px",borderRadius:10,border:pr?"none":`1.5px solid ${P.border}`,background:pr?(disabled?"#B8B0E8":P.brand):P.white,color:pr?P.white:P.dark,fontSize:14,fontWeight:600,cursor:disabled?"not-allowed":"pointer",outline:"none",boxShadow:pr&&!disabled?"0 2px 12px rgba(108,92,231,0.2)":"none",transition:"all 0.15s"}}>{children}</button>;
+};
+
+const RadioCard = ({label,sub,icon,selected,onClick}) => (
+  <button onClick={onClick} style={{display:"flex",alignItems:"center",gap:14,width:"100%",padding:"14px 16px",border:`2px solid ${selected?P.brand:P.border}`,borderRadius:12,background:selected?P.brandSoft:P.white,cursor:"pointer",textAlign:"left",outline:"none",boxShadow:selected?`0 0 0 3px ${P.brandSoft}`:"0 1px 3px rgba(0,0,0,0.03)",transition:"all 0.15s"}}>
+    {icon && <span style={{fontSize:20,width:32,textAlign:"center",flexShrink:0}}>{icon}</span>}
+    <div style={{flex:1}}>
+      <div style={{fontSize:14,fontWeight:600,color:P.dark,lineHeight:1.4}}>{label}</div>
+      {sub && <div style={{fontSize:12,color:P.text,marginTop:3,lineHeight:1.5}}>{sub}</div>}
+    </div>
+    <div style={{width:20,height:20,borderRadius:10,border:`2px solid ${selected?P.brand:"#CBD5E1"}`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+      {selected && <div style={{width:10,height:10,borderRadius:5,background:P.brand}} />}
+    </div>
+  </button>
+);
+
+const OTP = () => {
+  const [v,setV] = useState(["","","","","",""]);
+  const refs = useRef([]);
+  const set = (i,c) => { if(c.length>1)return; const n=[...v];n[i]=c;setV(n); if(c&&i<5)refs.current[i+1]?.focus(); };
+  return <div style={{display:"flex",gap:10,justifyContent:"center",margin:"28px 0"}}>
+    {v.map((c,i) => <input key={i} ref={el=>refs.current[i]=el} type="text" inputMode="numeric" maxLength={1} value={c} onChange={e=>set(i,e.target.value)}
+      style={{width:48,height:56,textAlign:"center",fontSize:22,fontWeight:700,border:`2px solid ${c?P.brand:P.border}`,borderRadius:10,outline:"none",color:P.dark}} />)}
+  </div>;
+};
+
+const Modal = ({onBiz,onBack}) => (
+  <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.35)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:200}}>
+    <div style={{background:P.white,borderRadius:20,padding:"36px 30px",maxWidth:400,width:"90%",textAlign:"center",animation:"pop 0.3s ease"}}>
+      <div style={{fontSize:48,marginBottom:14}}>🏢</div>
+      <h3 style={{fontSize:20,fontWeight:700,color:P.dark,margin:"0 0 10px"}}>Alaan is designed for businesses</h3>
+      <p style={{fontSize:14,color:P.text,margin:"0 0 20px",lineHeight:1.6}}>Alaan helps companies issue corporate cards, automate expense management, and process vendor payments from a single platform.</p>
+      <div style={{display:"flex",gap:12,justifyContent:"center",margin:"0 0 24px",flexWrap:"wrap"}}>
+        {[["💳","Corporate Cards"],["📊","Expenses"],["🔒","Controls"],["💸","Payments"]].map(([ic,lb]) =>
+          <div key={lb} style={{textAlign:"center",width:64}}>
+            <div style={{width:40,height:40,borderRadius:10,background:P.brandSoft,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,margin:"0 auto 4px"}}>{ic}</div>
+            <div style={{fontSize:10,color:P.text,fontWeight:500}}>{lb}</div>
+          </div>
+        )}
+      </div>
+      <div style={{display:"flex",flexDirection:"column",gap:10}}>
+        <Btn onClick={onBiz}>I'm signing up for my business</Btn>
+        <Btn v="secondary" onClick={onBack}>Go back</Btn>
+      </div>
+    </div>
+    <style>{`@keyframes pop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}`}</style>
+  </div>
+);
+
+const Left = () => (
+  <div style={{flex:"0 0 44%",background:"linear-gradient(155deg,#F8F7FF 0%,#EDE8FF 50%,#E4DEFF 100%)",padding:"40px 28px",display:"flex",flexDirection:"column",justifyContent:"space-between",minHeight:"100vh",boxSizing:"border-box"}}>
+    <div>
+      <div style={{fontSize:13,fontWeight:700,color:P.dark,letterSpacing:2,marginBottom:8}}>ALAAN</div>
+      <h1 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 4px"}}>Smarter spending for your business</h1>
+      <p style={{fontSize:13,color:P.text}}>Trusted by 3,000+ companies across the Middle East</p>
+    </div>
+    <div style={{background:P.white,borderRadius:16,padding:22,boxShadow:"0 4px 20px rgba(108,92,231,0.06)"}}>
+      <div style={{display:"inline-block",background:P.brand,color:P.white,padding:"4px 12px",borderRadius:8,fontSize:12,fontWeight:600,marginBottom:14}}>200+ hours saved weekly</div>
+      <p style={{fontSize:13,color:P.dark,lineHeight:1.7,margin:"0 0 14px",fontStyle:"italic"}}>"None of the other players we evaluated provided the flexibility to keep our SOPs intact while streamlining expenses."</p>
+      <div style={{borderTop:`1px solid ${P.border}`,paddingTop:12}}>
+        <div style={{fontSize:13,fontWeight:600,color:P.dark}}>Murtuza Unchwaniwala</div>
+        <div style={{fontSize:12,color:P.text}}>CFO, Al Barari Real Estate</div>
+      </div>
+    </div>
+    <div style={{padding:"14px 16px",background:"rgba(255,255,255,0.6)",borderRadius:12,border:`1px solid ${P.border}`}}>
+      <div style={{fontSize:11,fontWeight:700,color:P.brand,letterSpacing:1,marginBottom:8,textTransform:"uppercase"}}>P1 — What this tests</div>
+      <div style={{fontSize:12,color:P.text,lineHeight:1.6}}>Qualifying users <strong>before OTP is sent</strong>. Company name, size, and business vs personal intent are collected before any verification. Non-business users see the modal and are soft-blocked before entering the funnel.</div>
+    </div>
+  </div>
+);
+
+const Dots = ({current,total}) => (
+  <div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:32}}>
+    {Array.from({length:total},(_,i) => <div key={i} style={{width:i===current?28:8,height:8,borderRadius:4,background:i<=current?P.brand:P.border,transition:"all 0.3s"}} />)}
+  </div>
+);
+
+function App() {
+  const [step,setStep] = useState(0);
+  const [modal,setModal] = useState(false);
+  const [f,setF] = useState({name:"",email:"",mobile:"",coName:"",coSize:"",intent:""});
+  const u = (k,v) => setF(p=>({...p,[k]:v}));
+
+  const screens = [
+    // 0: Personal details
+    () => <>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+        <div style={{background:P.brandSoft,color:P.brand,fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:6}}>Step 1 of 5</div>
+      </div>
+      <h2 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 4px"}}>Tell us about yourself</h2>
+      <p style={{fontSize:13,color:P.text,margin:"0 0 24px"}}>This takes less than 2 minutes</p>
+      <div style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",background:P.bg,borderRadius:10,marginBottom:18,border:`1px solid ${P.border}`}}>
+        <span style={{fontSize:18}}>🇦🇪</span>
+        <span style={{fontSize:14,fontWeight:500,color:P.dark}}>UAE - United Arab Emirates</span>
+      </div>
+      <Inp label="Full Name" placeholder="Enter your full name" value={f.name} onChange={e=>u("name",e.target.value)} />
+      <Inp label="Work Email" placeholder="you@company.com" value={f.email} onChange={e=>u("email",e.target.value)} helper="A verification code will be sent to this email" />
+      <Inp label="Mobile Number" placeholder="Enter your number" value={f.mobile} onChange={e=>u("mobile",e.target.value)} pre="+971" helper="A verification code will be sent to this number" />
+      <div style={{display:"flex",justifyContent:"flex-end",marginTop:8}}>
+        <Btn full={false} onClick={()=>setStep(1)} disabled={!f.name||!f.email||!f.mobile}>Continue</Btn>
+      </div>
+    </>,
+
+    // 1: Qualifying questions (BEFORE OTP)
+    () => <>
+      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+        <div style={{background:P.brandSoft,color:P.brand,fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:6}}>Step 2 of 5</div>
+        <span style={{fontSize:12,color:P.light}}>Before we verify your details</span>
+      </div>
+      <h2 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 4px"}}>Tell us about your company</h2>
+      <p style={{fontSize:13,color:P.text,margin:"0 0 24px"}}>This helps us set up the right experience for you</p>
+      <Inp label="Company Name" placeholder="Enter your company name" value={f.coName} onChange={e=>u("coName",e.target.value)} />
+      <Sel label="Company Size" value={f.coSize} onChange={e=>u("coSize",e.target.value)} options={["1-10 employees","11-50 employees","51-200 employees","201-500 employees","500+ employees"]} />
+      <div style={{marginBottom:18}}>
+        <label style={{display:"block",fontSize:13,fontWeight:600,color:P.dark,marginBottom:10}}>What do you plan to use Alaan for?</label>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <RadioCard label="Business use" sub="Corporate cards, expense management, and vendor payments for my company" icon="💼" selected={f.intent==="business"} onClick={()=>u("intent","business")} />
+          <RadioCard label="Personal use" sub="Looking for a personal card or credit line" icon="👤" selected={f.intent==="personal"} onClick={()=>u("intent","personal")} />
+        </div>
+      </div>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}>
+        <Btn v="secondary" full={false} onClick={()=>setStep(0)}>Back</Btn>
+        <Btn full={false} onClick={()=>{ if(f.intent==="personal"){setModal(true)}else{setStep(2)} }} disabled={!f.coName||!f.coSize||!f.intent}>Continue</Btn>
+      </div>
+      {modal && <Modal onBiz={()=>{setModal(false);u("intent","business");setStep(2);}} onBack={()=>{setModal(false);u("intent","");}} />}
+    </>,
+
+    // 2: Mobile OTP
+    () => <div style={{textAlign:"center"}}>
+      <div style={{fontSize:15,fontWeight:700,color:P.dark,letterSpacing:2,marginBottom:28}}>ALAAN</div>
+      <h2 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 8px"}}>Verify your mobile number</h2>
+      <p style={{fontSize:13,color:P.text}}>Enter the 6-digit code sent to +971 {f.mobile||"XX XXX XXXX"}</p>
+      <OTP />
+      <p style={{fontSize:12,color:P.light}}>Code expires in 00:54 · <span style={{color:P.brand,cursor:"pointer",fontWeight:500}}>Resend</span></p>
+      <p style={{fontSize:12,color:P.light,marginTop:4}}>or <span style={{color:P.brand,cursor:"pointer",fontWeight:500}}>Get code on WhatsApp</span></p>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:24}}>
+        <Btn v="secondary" full={false} onClick={()=>setStep(1)}>Back</Btn>
+        <Btn full={false} onClick={()=>setStep(3)}>Verify</Btn>
+      </div>
+    </div>,
+
+    // 3: Email OTP
+    () => <div style={{textAlign:"center"}}>
+      <div style={{fontSize:15,fontWeight:700,color:P.dark,letterSpacing:2,marginBottom:28}}>ALAAN</div>
+      <h2 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 8px"}}>Verify your email</h2>
+      <p style={{fontSize:13,color:P.text}}>Enter the 6-digit code sent to {f.email||"you@company.com"}</p>
+      <OTP />
+      <p style={{fontSize:12,color:P.light}}>Code expires in 00:54 · <span style={{color:P.brand,cursor:"pointer",fontWeight:500}}>Resend</span></p>
+      <div style={{display:"flex",justifyContent:"space-between",marginTop:24}}>
+        <Btn v="secondary" full={false} onClick={()=>setStep(2)}>Back</Btn>
+        <Btn full={false} onClick={()=>setStep(4)}>Verify</Btn>
+      </div>
+    </div>,
+
+    // 4: Done
+    () => <div style={{textAlign:"center",padding:"20px 0"}}>
+      <div style={{width:72,height:72,borderRadius:36,background:P.greenBg,display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",fontSize:36}}>✅</div>
+      <h2 style={{fontSize:22,fontWeight:700,color:P.dark,margin:"0 0 8px"}}>Qualification complete</h2>
+      <p style={{fontSize:13,color:P.text,margin:"0 0 20px",lineHeight:1.6}}>These three data points were captured <strong>before OTP was sent</strong>, meaning non-business users are identified before they enter the funnel.</p>
+      <div style={{background:P.bg,borderRadius:12,padding:18,textAlign:"left",marginBottom:20,border:`1px solid ${P.border}`}}>
+        <div style={{fontSize:11,fontWeight:700,color:P.brand,marginBottom:10,textTransform:"uppercase",letterSpacing:1}}>Captured before OTP</div>
+        {[["Company name",f.coName],["Company size",f.coSize],["Intent",f.intent==="business"?"Business use":"Personal use"]].map(([l,v])=>
+          <div key={l} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:`1px solid ${P.border}`}}>
+            <span style={{fontSize:12,color:P.text}}>{l}</span>
+            <span style={{fontSize:12,color:P.dark,fontWeight:500}}>{v}</span>
+          </div>
+        )}
+      </div>
+      <Btn onClick={()=>{setStep(0);setF({name:"",email:"",mobile:"",coName:"",coSize:"",intent:""});}}>Restart prototype</Btn>
+    </div>,
+  ];
+
+  return <div style={{display:"flex",width:"100%",minHeight:"100vh"}}>
+    <Left />
+    <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"center",padding:"36px 48px",maxWidth:520,margin:"0 auto",boxSizing:"border-box",minHeight:"100vh",overflowY:"auto"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+        <span style={{fontSize:12,color:P.light}}>Have an account? <span style={{color:P.brand,fontWeight:600,cursor:"pointer"}}>Sign in</span></span>
+        <span style={{fontSize:12,color:P.light,cursor:"pointer"}}>🌐 English ▾</span>
+      </div>
+      <Dots current={step} total={5} />
+      {screens[step]()}
+    </div>
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
